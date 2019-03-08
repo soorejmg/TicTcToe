@@ -1,0 +1,344 @@
+package com.sample
+ 
+import com.sample.TicTocTest.Board;
+
+// Opponent Plays FIRST in a corner cell-> You play in center
+
+
+rule "OppPlayFirst_FirstMove_CornerCell_rule1"
+//dialect "java"
+	agenda-group "OppPlayFirst_FirstMove"
+		when
+	//	b : Board( b.getA11() == 0 )
+		b:Board(A11==0)
+	then
+			System.out.print("Executing OppPlayFirst_FirstMove_CornerCell_rule1\n");
+	
+		b.setA22(1);
+		update(b);
+		
+end
+
+rule "OppPlayFirst_FirstMove_CornerCell_rule2"
+dialect "java"
+	agenda-group "OppPlayFirst_FirstMove"
+
+		when
+		b : Board( b.getA31() == 0 )
+	then
+	System.out.print("Executing OppPlayFirst_FirstMove_CornerCell_rule2\n");
+	
+		b.setA22(1);
+		update(b);
+		
+end
+
+rule "OppPlayFirst_FirstMove_CornerCell_rule3"
+dialect "java"
+	agenda-group "OppPlayFirst_FirstMove"
+
+	when
+		b : Board( b.getA33()== 0 )
+	then
+	System.out.print("Executing OppPlayFirst_FirstMove_CornerCell_rule3\n");
+	b.setA22(1);
+	update(b);
+	
+end
+
+rule "OppPlayFirst_FirstMove_CornerCell_rule4"
+dialect "java"
+	agenda-group "OppPlayFirst_FirstMove"
+
+	when
+		b : Board( b.getA13()== 0 )
+	then
+		System.out.print("Executing OppPlayFirst_FirstMove_CornerCell_rule4\n");
+		b.setA22(1);
+		update(b);
+		
+		
+end
+
+
+
+
+
+
+//OPPONENT PLAYS FIRST IN CENTRE----> You play in any corner cell
+//**** can select any, but due to time limitation, keeping only one corner cell***/
+
+rule "OppPlayFirst_FirstMove_CenterCell_rule1"
+dialect "java"
+	agenda-group "OppPlayFirst_FirstMove"
+
+	when
+		b : Board( b.getA22() == 0 )
+	then
+		System.out.print("Executing OppPlayFirst_FirstMove_CenterCell_rule1\n");
+		b.setA13(1);
+		update(b);
+				
+end
+
+
+
+
+//OPPONENT PLAYS IN ANY EDGE MIDDLE CELL---> The you put in center
+
+rule "OppPlayFirst_FirstMove_EdgeMiddleCell_rule1"
+dialect "java"
+	agenda-group "OppPlayFirst_FirstMove"
+
+	when
+		b : Board( b.getA12() == 0 )
+	then
+		System.out.print("Executing OppPlayFirst_FirstMove_CenterCell_rule1\n");
+		b.setA22(1);
+		update(b);
+				
+end
+
+
+rule "OppPlayFirst_FirstMove_EdgeMiddleCell_rule2"
+dialect "java"
+	agenda-group "OppPlayFirst_FirstMove"
+
+	when
+		b : Board( b.getA21() == 0 )
+	then
+		System.out.print("Executing OppPlayFirst_FirstMove_EdgeMiddleCell_rule2\n");
+		b.setA22(1);
+		update(b);
+				
+end
+
+rule "OppPlayFirst_FirstMove_EdgeMiddleCell_rule3"
+dialect "java"
+	agenda-group "OppPlayFirst_FirstMove"
+
+	when
+		b : Board( b.getA32() == 0 )
+	then
+		System.out.print("Executing OppPlayFirst_FirstMove_EdgeMiddleCell_rule3\n");
+		b.setA22(1);
+		update(b);
+				
+end
+
+rule "OppPlayFirst_FirstMove_EdgeMiddleCell_rule4"
+dialect "java"
+	agenda-group "OppPlayFirst_FirstMove"
+
+	when
+		b : Board( b.getA23() == 0 )
+	then
+		System.out.print("Executing OppPlayFirst_FirstMove_EdgeMiddleCell_rule4\n");
+		b.setA22(1);
+		update(b);
+				
+end
+
+
+
+
+
+//OPPONENT PLAYFIRST, your SECOND MOVE
+
+
+/// NOTE:- In the Second Move, inside the Board, dont put b.get(A11). It is not right
+/* b : Board( A11 == 0, A22==1 , A33==0 ) should be read as: " Find any instance of Object
+Board which has value A11=0, A22=1 and A33-0.
+
+If you b: Board(b.getA11=0;b.getA22()==, b.getA33()=0) then it is not finding all instances
+of Board that has values A11=0 A22=1 and A33=0. It has come other meaning which i dont know.
+
+ONly in the first case when there are no objects of Board, use it like above.
+
+*/
+
+
+//case when she played corner and you played center and then she play corner
+// That is,  when you are between he in diagonal arrangement---> play in any edge center cell
+
+rule "OppPlayFirst_FirstMoveOnCornerCell_SecondMove_rule1"
+dialect "java"
+	agenda-group "OppPlayFirst_SecondMove"
+
+	when
+	b : Board( A11 == 0, A22==1 , A33==0 )
+	
+	
+	then
+	System.out.print("this is A12 befor running tool:");System.out.print(b.getA12());
+		System.out.print("Executing FirstMoveOnCornerCell_SecondMove_rule1\n");
+	
+		b.setA12(1);
+		update(b);
+		
+	System.out.print("this is A12 after running tool:");System.out.print(b.getA12());
+end
+
+
+rule "OppPlayFirst_FirstMoveOnCornerCell_SecondMove_rule2"
+dialect "java"
+	agenda-group "OppPlayFirst_SecondMove"
+
+	when
+	b : Board( A31 == 0, A22==1 , A13==0 )
+	
+	
+	then
+	System.out.print("this is A12 befor running tool:");System.out.print(b.getA12());
+		System.out.print("Executing OppPlayFirst_FirstMoveOnCornerCell_SecondMove_rule2\n");
+	
+		b.setA32(1);
+		update(b);
+		
+	System.out.print("this is A12 after running tool:");System.out.print(b.getA12());
+end
+
+
+//Case she Played in center and you pleayed corner cell ( A13 fixed in our rule)
+// and then she played on corner-------> You put only on corner cells. Avoid Edge Middle Cell
+
+
+rule "OppPlayFirst_FirstMoveOnCenterCell_SecondMove_rule3"
+dialect "java"
+	agenda-group "OppPlayFirst_SecondMove"
+
+	when
+	b : Board( A31 == 0, A22==0 , A13==1 )
+	
+	
+	then
+	System.out.print("this is A12 befor running tool:");System.out.print(b.getA12());
+		System.out.print("Executing OppPlayFirst_FirstMoveOnCenterCell_SecondMove_rule3\n");
+	
+		b.setA33(1);
+		update(b);
+		
+	System.out.print("this is A12 after running tool:");System.out.print(b.getA12());
+end
+
+
+
+//Case when She Played first in  edge Middle cell. You put zero in center and then she placed
+// in a cornr cell not near to her first zero----> You place in corner cell that is diagonal
+//to one of her zero
+
+
+rule "OppPlayFirst_FirstMoveOnEdgeCenterCell_SecondMove_rule4"
+dialect "java"
+	agenda-group "OppPlayFirst_SecondMove"
+	when
+	b : Board( A12 == 0, A33==0 , A22==1 )
+	then
+		System.out.print("Executing OppPlayFirst_FirstMoveOnEdgeCenterCell_SecondMove_rule4\n");	
+		b.setA11(1);
+		update(b);	
+end
+
+
+rule "OppPlayFirst_FirstMoveOnEdgeCenterCell_SecondMove_rule5"
+dialect "java"
+	agenda-group "OppPlayFirst_SecondMove"
+	when
+	b : Board( A12 == 0, A31==0 , A22==1 )
+	then
+		System.out.print("Executing OppPlayFirst_FirstMoveOnEdgeCenterCell_SecondMove_rule5\n");	
+		b.setA13(1);
+		update(b);	
+end
+
+
+rule "OppPlayFirst_FirstMoveOnEdgeCenterCell_SecondMove_rule6"
+dialect "java"
+	agenda-group "OppPlayFirst_SecondMove"
+	when
+	b : Board( A21 == 0, A13==0 , A22==1 )
+	then
+		System.out.print("Executing OppPlayFirst_FirstMoveOnEdgeCenterCell_SecondMove_rule6\n");	
+		b.setA31(1);
+		update(b);	
+end
+
+
+rule "OppPlayFirst_FirstMoveOnEdgeCenterCell_SecondMove_rule7"
+dialect "java"
+	agenda-group "OppPlayFirst_SecondMove"
+	when
+	b : Board( A21 == 0, A33==0 , A22==1 )
+	then
+		System.out.print("Executing OppPlayFirst_FirstMoveOnEdgeCenterCell_SecondMove_rule7\n");	
+		b.setA11(1);
+		update(b);	
+end
+
+
+rule "OppPlayFirst_FirstMoveOnEdgeCenterCell_SecondMove_rule8"
+dialect "java"
+	agenda-group "OppPlayFirst_SecondMove"
+	when
+	b : Board( A32 == 0, A11==0 , A22==1 )
+	then
+		System.out.print("Executing OppPlayFirst_FirstMoveOnEdgeCenterCell_SecondMove_rule8\n");	
+		b.setA33(1);
+		update(b);	
+end
+
+
+rule "OppPlayFirst_FirstMoveOnEdgeCenterCell_SecondMove_rule9"
+dialect "java"
+	agenda-group "OppPlayFirst_SecondMove"
+	when
+	b : Board( A32 == 0, A13==0 , A22==1 )
+	then
+		System.out.print("Executing OppPlayFirst_FirstMoveOnEdgeCenterCell_SecondMove_rule9\n");	
+		b.setA31(1);
+		update(b);	
+end
+
+
+rule "OppPlayFirst_FirstMoveOnEdgeCenterCell_SecondMove_rule10"
+dialect "java"
+	agenda-group "OppPlayFirst_SecondMove"
+	when
+	b : Board( A23 == 0, A11==0 , A22==1 )
+	then
+		System.out.print("Executing OppPlayFirst_FirstMoveOnEdgeCenterCell_SecondMove_rule10\n");	
+		b.setA33(1);
+		update(b);	
+end
+
+rule "OppPlayFirst_FirstMoveOnEdgeCenterCell_SecondMove_rule11"
+dialect "java"
+	agenda-group "OppPlayFirst_SecondMove"
+	when
+	b : Board( A23 == 0, A31==0 , A22==1 )
+	then
+		System.out.print("Executing OppPlayFirst_FirstMoveOnEdgeCenterCell_SecondMove_rule11\n");	
+		b.setA13(1);
+		update(b);	
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
